@@ -1,0 +1,75 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.glyptodon.guacamole</groupId>
+    <artifactId>stress</artifactId>
+    <packaging>jar</packaging>
+    <version>0.8.0</version>
+    <name>stress</name>
+    <url>http://guac-dev.org/</url>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <build>
+        <plugins>
+
+            <!-- Written for 1.6 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>org.glyptodon.guacamole.Stress</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <dependencies>
+
+        <!-- Guacamole Java API -->
+        <dependency>
+            <groupId>org.glyptodon.guacamole</groupId>
+            <artifactId>guacamole-common</artifactId>
+            <version>0.8.0</version>
+        </dependency>
+
+    </dependencies>
+
+    <repositories>
+        
+        <!-- Central Guacamole repository -->
+        <repository>
+            <id>guac-dev</id>
+            <url>http://guac-dev.org/repo</url>
+        </repository>
+        
+    </repositories>
+
+</project>
