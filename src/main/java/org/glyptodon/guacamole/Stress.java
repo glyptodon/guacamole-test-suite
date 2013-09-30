@@ -137,8 +137,9 @@ public class Stress {
                         logger.info("Frame duration={}ms, {} bytes",
                                 current-frame_start, bytes);
 
-                    // Respond to sync
-                    writer.writeInstruction(instruction);
+                    // Respond to sync (unless something else will be writing)
+                    if (!hammer)
+                        writer.writeInstruction(instruction);
 
                     // Next frame
                     frame_start = current;
