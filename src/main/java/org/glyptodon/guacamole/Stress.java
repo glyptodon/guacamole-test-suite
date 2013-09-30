@@ -1,8 +1,6 @@
 
 package org.glyptodon.guacamole;
 
-
-
 import org.glyptodon.guacamole.io.GuacamoleReader;
 import org.glyptodon.guacamole.io.GuacamoleWriter;
 import org.glyptodon.guacamole.net.GuacamoleSocket;
@@ -53,6 +51,8 @@ public class Stress {
         String hostname = "localhost";
         int port = 4822;
 
+        boolean hammer = false;
+
         // Parse arguments
         for (String arg : args) {
 
@@ -76,6 +76,13 @@ public class Stress {
             // If protocol, set protocol of config
             else if (name.equals("protocol"))
                 config.setProtocol(getArgValue(arg));
+
+            // Special modes
+            else if (name.equals("enable")) {
+                String value = getArgValue(arg);
+                if ("hammer".equals(value))
+                    hammer = true;
+            }
 
             // Otherwise, set value of parameter in config
             else
@@ -103,6 +110,12 @@ public class Stress {
         GuacamoleWriter writer = socket.getWriter();
         GuacamoleReader reader = socket.getReader();
 
+        if (hammer) {
+            logger.info("Hammer mode enabled.");
+            Hammer h = new Hammer(writer);
+            h.start();
+        }
+        
         // Frame statistics
         long frame_start = System.currentTimeMillis();
         int bytes = 0;
