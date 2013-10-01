@@ -3,10 +3,10 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.glyptodon.guacamole</groupId>
-    <artifactId>stress</artifactId>
+    <artifactId>guacamole-test-suite</artifactId>
     <packaging>jar</packaging>
     <version>0.8.0</version>
-    <name>stress</name>
+    <name>guacamole-test-suite</name>
     <url>http://guac-dev.org/</url>
 
     <properties>
