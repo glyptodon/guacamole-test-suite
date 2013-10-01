@@ -1,4 +1,26 @@
 
+/**
+ * Copyright (C) 2013 Glyptodon LLC
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
+ * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ * IN THE SOFTWARE.
+ */
+
 package org.glyptodon.guacamole;
 
 import org.glyptodon.guacamole.io.GuacamoleReader;
@@ -11,6 +33,13 @@ import org.glyptodon.guacamole.protocol.GuacamoleInstruction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Application which stresses implementations of the Guacamole protocol by
+ * acting as a source of load. By default, the load behavior is passive, but
+ * an active mode can be enabled with the --enable=hammer option.
+ * 
+ * @author Michael Jumper
+ */
 public class Stress {
 
     /**
@@ -18,6 +47,13 @@ public class Stress {
      */
     private static final Logger logger = LoggerFactory.getLogger(Stress.class);
 
+    /**
+     * Given a command-line argument of the form "--name=value", returns the
+     * name, if any.
+     * 
+     * @param arg The argument to parse.
+     * @return The name of the argument, if any, or null if no name exists.
+     */
     private static String getArgName(String arg) {
 
         // Arg must start with --
@@ -34,6 +70,13 @@ public class Stress {
 
     }
 
+    /**
+     * Given a command-line argument of the form "--name=value", returns the
+     * value, if any.
+     * 
+     * @param arg The argument to parse.
+     * @return The value of the argument, if any, or null if no value exists.
+     */
     private static String getArgValue(String arg) {
 
         // If no equals sign, then no value
@@ -45,7 +88,25 @@ public class Stress {
 
     }
 
-    public static void main(String[] args) throws Exception {
+    /**
+     * Performs stress tests on a Guacamole protocol implementation based on
+     * the arguments given.
+     * 
+     * Only a single "--protocol" argument is required, specifying the protocol
+     * to request when connecting to guacd. By default, the program will connect
+     * to localhost at port 4822 but this can be changed by specifying a
+     * different hostname:port. Protocol-specific arguments are given as normal
+     * command-line options.
+     * 
+     * Active stress testing can be enabled with "--enable=hammer".
+     * 
+     * For example:
+     * 
+     * java Stress --protocol=vnc --hostname=test --port=5901 localhost:4822
+     * 
+     * @param args Arguments describing how the test should be run.
+     */
+    public static void main(String[] args) {
 
         GuacamoleConfiguration config = new GuacamoleConfiguration();
         String hostname = "localhost";
@@ -98,29 +159,29 @@ public class Stress {
 
         logger.info("Connecting to guacd at {}, port {}...", hostname, port);
 
-        // Connect
-        GuacamoleSocket socket = new ConfiguredGuacamoleSocket(
-            new InetGuacamoleSocket(hostname, port),
-            config
-        );
-
-        logger.info("Connected.");
-
-        // Get I/O objects
-        GuacamoleWriter writer = socket.getWriter();
-        GuacamoleReader reader = socket.getReader();
-
-        if (hammer) {
-            logger.info("Hammer mode enabled.");
-            Hammer h = new Hammer(writer);
-            h.start();
-        }
-        
-        // Frame statistics
-        long frame_start = System.currentTimeMillis();
-        int bytes = 0;
-
         try {
+
+            // Connect
+            GuacamoleSocket socket = new ConfiguredGuacamoleSocket(
+                new InetGuacamoleSocket(hostname, port),
+                config
+            );
+
+            logger.info("Connected.");
+
+            // Get I/O objects
+            GuacamoleWriter writer = socket.getWriter();
+            GuacamoleReader reader = socket.getReader();
+
+            if (hammer) {
+                logger.info("Hammer mode enabled.");
+                Hammer h = new Hammer(writer);
+                h.start();
+            }
+            
+            // Frame statistics
+            long frame_start = System.currentTimeMillis();
+            int bytes = 0;
 
             // Read all instructions
             GuacamoleInstruction instruction;
