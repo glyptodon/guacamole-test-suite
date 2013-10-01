@@ -111,6 +111,7 @@ public class Stress {
         GuacamoleConfiguration config = new GuacamoleConfiguration();
         String hostname = "localhost";
         int port = 4822;
+        int time_limit = 0;
 
         boolean hammer = false;
 
@@ -137,6 +138,10 @@ public class Stress {
             // If protocol, set protocol of config
             else if (name.equals("protocol"))
                 config.setProtocol(getArgValue(arg));
+
+            // Read time limit if given
+            else if (name.equals("time-limit"))
+                time_limit = Integer.parseInt(getArgValue(arg));
 
             // Special modes
             else if (name.equals("enable")) {
@@ -168,6 +173,7 @@ public class Stress {
             );
 
             logger.info("Connected.");
+            long connection_start = System.currentTimeMillis();
 
             // Get I/O objects
             GuacamoleWriter writer = socket.getWriter();
@@ -190,6 +196,12 @@ public class Stress {
                 // Get current time
                 long current = System.currentTimeMillis();
 
+                // Stop if past time limit
+                if (time_limit != 0 && current - connection_start >= time_limit) {
+                    logger.info("Time limit reached.");
+                    System.exit(0);
+                }
+                
                 // Respond to all sync instructions
                 if (instruction.getOpcode().equals("sync")) {
 
@@ -221,12 +233,15 @@ public class Stress {
 
             } // end for each instruction
 
+            logger.error("End of input stream.");
+            
         }
         catch (GuacamoleException e) {
             logger.error("Error reading instruction stream.", e);
         }
 
         logger.info("Disconnected.");
+        System.exit(1);
 
     }
 
