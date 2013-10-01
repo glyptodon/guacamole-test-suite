@@ -1,0 +1,16 @@
+
+------------------------------------------------------------
+ What is guacamole-test-suite?
+------------------------------------------------------------
+
+guacamole-test-suite is a Java application that performs tests against
+implementations of the Guacamole protocol, particularly guacd. It is intended
+to stress-test aspects of protocol decoding and reveal bugs.
+
+Currently, only one application is implemented in the suite: Stress. This
+application connects to an instance of guacd based on arguments on the
+command-line. By default, the application applies load passively, but it
+can apply active load if requested.
+
+Other applications will be implemented as needed.
+
